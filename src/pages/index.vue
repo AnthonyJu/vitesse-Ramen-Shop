@@ -9,6 +9,13 @@
       <TresBoxGeometry :args="[1, 1, 1]" />
       <TresMeshNormalMaterial />
     </TresMesh>
+    <!-- Ramen -->
+    <Suspense>
+      <primitive :object="ramenShop.scene" />
+    </Suspense>
+    <Suspense>
+      <primitive :object="ramenHologram.scene" />
+    </Suspense>
     <!-- 环境光 -->
     <TresDirectionalLight :position="[0, 2, 4]" :intensity="1.2" cast-shadow />
   </TresCanvas>
@@ -16,7 +23,7 @@
 
 <script setup lang="ts">
 import { TresCanvas } from '@tresjs/core'
-import { OrbitControls } from '@tresjs/cientos'
+import { OrbitControls, useGLTF } from '@tresjs/cientos'
 import { BasicShadowMap, NoToneMapping, SRGBColorSpace } from 'three'
 
 const gl = {
@@ -27,4 +34,7 @@ const gl = {
   outputColorSpace: SRGBColorSpace,
   toneMapping: NoToneMapping,
 }
+
+const ramenShop = await useGLTF('/static/models/ramenShop/glTF/ramenShop.gltf', { draco: true })
+const ramenHologram = await useGLTF('/static/models/ramenShop/glTF/ramenHologram.gltf', { draco: true })
 </script>
