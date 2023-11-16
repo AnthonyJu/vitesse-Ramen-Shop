@@ -5,6 +5,7 @@ import Pages from 'vite-plugin-pages'
 import AutoImport from 'unplugin-auto-import/vite'
 import VueDevTools from 'vite-plugin-vue-devtools'
 import Unocss from 'unocss/vite'
+import { templateCompilerOptions } from '@tresjs/core'
 
 export default defineConfig({
   server: {
@@ -29,6 +30,7 @@ export default defineConfig({
         defineModel: true,
         propsDestructure: true,
       },
+      ...templateCompilerOptions,
     }),
 
     // https://github.com/hannoeru/vite-plugin-pages
