@@ -6,6 +6,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import VueDevTools from 'vite-plugin-vue-devtools'
 import Unocss from 'unocss/vite'
 import StringFile from 'vite-plugin-string'
+import WebfontDownload from 'vite-plugin-webfont-dl'
 import { templateCompilerOptions } from '@tresjs/core'
 
 export default defineConfig({
@@ -67,5 +68,8 @@ export default defineConfig({
 
     // https://github.com/webfansplz/vite-plugin-vue-devtools
     VueDevTools(),
+
+    // https://github.com/feat-agency/vite-plugin-webfont-dl
+    WebfontDownload(),
   ],
 })

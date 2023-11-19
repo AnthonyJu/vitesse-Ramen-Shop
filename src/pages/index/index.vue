@@ -1,14 +1,22 @@
 <template>
+  <!-- loading -->
+  <Loading
+    v-if="showLoading"
+    :is-finished="hasFinishLoading"
+    :progress="progress"
+    @onStart="handleStart"
+  />
+  <!-- Scene -->
   <TresCanvas ref="tresCanvas" v-bind="config">
     <!-- 透视相机 -->
     <TresPerspectiveCamera :position="[15.9, 6.8, -11.4]" />
     <!-- 轨道控制器 -->
     <OrbitControls />
-    <!-- ramenHologram -->
+    <!-- Ramen Hologram -->
     <Suspense>
       <RamenHologram />
     </Suspense>
-    <!-- ramenShop -->
+    <!-- Ramen Shop -->
     <Suspense v-for="node in ramenShop.nodes" :key="node.name">
       <primitive :object="node" />
     </Suspense>
@@ -17,12 +25,13 @@
 
 <script setup lang="ts">
 import * as THREE from 'three'
-import { TresCanvas, useRenderLoop } from '@tresjs/core'
-import { OrbitControls, useGLTF } from '@tresjs/cientos'
+import { TresCanvas, useRenderLoop, useTexture } from '@tresjs/core'
+import { OrbitControls, useGLTF, useProgress } from '@tresjs/cientos'
 import { BasicShadowMap, NoToneMapping, SRGBColorSpace } from 'three'
 
 import sources from './sources'
 import { playSound } from './playSounds'
+import Loading from './components/Loading.vue'
 import RamenHologram from './components/RamenHologram.vue'
 
 import bigScreenVertexShader from '@/assets/shaders/bigScreenShaders/vertex.glsl'
@@ -36,6 +45,9 @@ const config = {
   outputColorSpace: SRGBColorSpace,
   toneMapping: NoToneMapping,
 }
+
+const showLoading = ref(true)
+const { hasFinishLoading, progress } = await useProgress()
 
 const { onLoop } = useRenderLoop()
 const tresCanvas = ref<InstanceType<typeof TresCanvas> | null>(null)
@@ -58,7 +70,7 @@ onLoop(({ elapsed }) => {
   }
 })
 
-function setRamenShopMaterial() {
+async function setRamenShopMaterial() {
   setDetectSupport(tresCanvas.value!.context.renderer.value)
 
   for (const key in ramenShop.nodes) {
@@ -116,17 +128,25 @@ function setRamenShopMaterial() {
     else if (source.type === 'color') {
       ramenShop.nodes[key].material = source.material
     }
+    else if (source.type === 'texture') {
+      const { map } = await useTexture({ map: source.path })
+      ramenShop.nodes[key].material = new THREE.MeshBasicMaterial({ map })
+    }
     else {
       loadKTX2Texture(ramenShop.nodes[key], source.type, source.path!)
     }
   }
 }
 
-onMounted(() => {
+function handleStart() {
+  showLoading.value = false
   playSound('ding', 0.14)
   window.setTimeout(() => {
     playSound('cooking', 0.1, true)
   }, 600)
+}
+
+onMounted(() => {
   setRamenShopMaterial()
 })
 </script>

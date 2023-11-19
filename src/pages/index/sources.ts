@@ -69,12 +69,12 @@ export default [
   },
   // {
   //   name: 'poleLight',
-  //   type: 'matcap',
+  //   type: 'texture',
   //   path: '/static/textures/matcaps/lightMatcap.png',
   // },
   // {
   //   name: 'neonPink',
-  //   type: 'matcap',
+  //   type: 'texture',
   //   path: '/static/textures/matcaps/lightMatcap.png',
   // },
   // {
@@ -295,6 +295,11 @@ export default [
     material: neonPinkMaterial,
   },
   {
+    name: 'poleLight',
+    type: 'color',
+    material: poleLightMaterial,
+  },
+  {
     name: 'neonBlue',
     type: 'color',
     material: neonBlueMaterial,
@@ -313,11 +318,6 @@ export default [
     name: 'arcadeRim',
     type: 'color',
     material: neonBlueMaterial,
-  },
-  {
-    name: 'poleLight',
-    type: 'color',
-    material: poleLightMaterial,
   },
   {
     name: 'neonGreen',
