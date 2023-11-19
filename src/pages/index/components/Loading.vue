@@ -20,17 +20,18 @@
       <h1>Cooking Your Ramen... {{ progress }}%</h1>
     </div>
     <button
-      v-show="showStartBtn"
       class="start cursor-pointer"
-      :class="showStartBtn ? 'animate-fade-in block' : ''"
+      :class="showDiningBtn ? 'animate-fade-in block' : ''"
       @click="handleStart"
     >
-      START
+      Dining
     </button>
   </div>
 </template>
 
 <script setup lang='ts'>
+import { playSound } from '../playSounds'
+
 const props = defineProps<{
   progress: number
   isFinished: boolean
@@ -42,7 +43,7 @@ const emit = defineEmits<{
 
 const fadeOVerlay = ref(false)
 const hideCooking = ref(false)
-const showStartBtn = ref(false)
+const showDiningBtn = ref(false)
 const time = new Date().getTime()
 
 watch(() => props.isFinished, (vale) => {
@@ -54,18 +55,22 @@ watch(() => props.isFinished, (vale) => {
   else hideCookingFn()
 })
 
-function hideCookingFn() {
+async function hideCookingFn() {
   hideCooking.value = true
-  setTimeout(() => {
-    showStartBtn.value = true
-    document.getElementById('cooking')?.remove()
-  }, 1000)
+
+  await delayExecution(1000)
+  showDiningBtn.value = true
+  document.getElementById('cooking')?.remove()
 }
 
-function handleStart() {
+async function handleStart() {
   fadeOVerlay.value = true
-  setTimeout(() => {
-    emit('onStart')
-  }, 500)
+
+  playSound('click', 0.3)
+  playSound('whoosh', 0.6)
+  playSound('cooking', 0.1, true)
+
+  await delayExecution(500)
+  emit('onStart')
 }
 </script>

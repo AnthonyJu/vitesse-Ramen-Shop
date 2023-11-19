@@ -9,7 +9,7 @@
   <!-- Scene -->
   <TresCanvas ref="tresCanvas" v-bind="config">
     <!-- 透视相机 -->
-    <TresPerspectiveCamera :position="[15.9, 6.8, -11.4]" />
+    <TresPerspectiveCamera :position="[-14.84, 8.0, -2.24]" :rotation="[-1.81, -1.11, -1.84]" />
     <!-- 轨道控制器 -->
     <OrbitControls />
     <!-- Ramen Hologram -->
@@ -138,12 +138,11 @@ async function setRamenShopMaterial() {
   }
 }
 
-function handleStart() {
+async function handleStart() {
   showLoading.value = false
+
+  await delayExecution(600)
   playSound('ding', 0.14)
-  window.setTimeout(() => {
-    playSound('cooking', 0.1, true)
-  }, 600)
 }
 
 onMounted(() => {

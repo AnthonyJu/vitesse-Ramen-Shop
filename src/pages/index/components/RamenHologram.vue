@@ -196,6 +196,6 @@ function updatePositions(delta: number) {
 onMounted(() => {
   positions = combineBuffer()
   createMesh(positions)
-  window.setTimeout(raiseHologram, 100)
+  setTimeout(raiseHologram, 100)
 })
 </script>
