@@ -5,6 +5,7 @@ import Pages from 'vite-plugin-pages'
 import AutoImport from 'unplugin-auto-import/vite'
 import VueDevTools from 'vite-plugin-vue-devtools'
 import Unocss from 'unocss/vite'
+import StringFile from 'vite-plugin-string'
 import { templateCompilerOptions } from '@tresjs/core'
 
 export default defineConfig({
@@ -59,6 +60,10 @@ export default defineConfig({
     // https://github.com/antfu/unocss
     // see uno.config.ts for config
     Unocss(),
+
+    StringFile({
+      include: '**/*.glsl',
+    }),
 
     // https://github.com/webfansplz/vite-plugin-vue-devtools
     VueDevTools(),

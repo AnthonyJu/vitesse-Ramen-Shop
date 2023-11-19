@@ -26,6 +26,7 @@
     "skipLibCheck": true
   },
   "exclude": [
+    "public",
     "dist",
     "node_modules",
     "eslint.config.js"
