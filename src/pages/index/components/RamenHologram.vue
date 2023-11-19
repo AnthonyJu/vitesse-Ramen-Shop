@@ -3,13 +3,15 @@
     :object="hologramBase"
     :position="[-0.13, 5.16, -0.95]"
     :rotation-x="Math.PI * -0.5"
-    @click="breakHologram"
   />
+  <Sphere :args="[1.2, 8, 8]" :position="[-0.1, 7, -0.95]" @click="breakHologram">
+    <TresMeshBasicMaterial :transparent="true" :opacity="0" />
+  </Sphere>
 </template>
 
 <script setup lang='ts'>
 import * as THREE from 'three'
-import { useGLTF } from '@tresjs/cientos'
+import { Sphere, useGLTF } from '@tresjs/cientos'
 import { useRenderLoop, useTresContext } from '@tresjs/core'
 import { playSound } from '../playSounds'
 
@@ -49,15 +51,9 @@ const hologramData = {
   count: 0,
 }
 
-let positions: THREE.BufferAttribute | null = null
-
-onLoop(({ delta, elapsed }) => {
-  hologramData.mesh.rotation.y += -0.25 * delta
-  if (hologramBase) {
-    hologramBase.material.uniforms.uTime.value = -elapsed
-  }
-  updatePositions(delta)
-})
+let positions = combineBuffer()
+createMesh(positions)
+setTimeout(raiseHologram, 100)
 
 function combineBuffer() {
   let offset = 0
@@ -90,7 +86,9 @@ function createMesh(positions: THREE.BufferAttribute) {
   geometry.setAttribute('position', positions.clone())
   geometry.setAttribute('initialPosition', positions.clone());
 
-  (geometry.attributes.position as THREE.BufferAttribute).setUsage(THREE.DynamicDrawUsage)
+  (geometry.attributes.position as THREE.BufferAttribute).setUsage(
+    THREE.DynamicDrawUsage,
+  )
 
   const mesh = new THREE.Points(
     geometry,
@@ -103,25 +101,6 @@ function createMesh(positions: THREE.BufferAttribute) {
   scene.value.add(mesh)
 
   hologramData.mesh = mesh
-}
-
-function raiseHologram() {
-  if (hologramData.verticesDown >= hologramData.count) {
-    hologramData.direction = 1
-    hologramData.speed = 5
-    hologramData.verticesDown = 0
-    hologramData.delay = 1000
-  }
-}
-
-function breakHologram() {
-  if (hologramData.verticesUp >= hologramData.count) {
-    playSound('hologram')
-    hologramData.direction = -1
-    hologramData.speed = 15
-    hologramData.verticesUp = 0
-    hologramData.delay = 50
-  }
 }
 
 function updatePositions(delta: number) {
@@ -193,9 +172,30 @@ function updatePositions(delta: number) {
   positions.needsUpdate = true
 }
 
-onMounted(() => {
-  positions = combineBuffer()
-  createMesh(positions)
-  setTimeout(raiseHologram, 100)
+async function raiseHologram() {
+  if (hologramData.verticesDown >= hologramData.count) {
+    hologramData.direction = 1
+    hologramData.speed = 5
+    hologramData.verticesDown = 0
+    hologramData.delay = 1000
+  }
+}
+
+function breakHologram() {
+  if (hologramData.verticesUp >= hologramData.count) {
+    playSound('hologram')
+    hologramData.direction = -1
+    hologramData.speed = 15
+    hologramData.verticesUp = 0
+    hologramData.delay = 50
+  }
+}
+
+onLoop(({ delta, elapsed }) => {
+  hologramData.mesh.rotation.y += -0.25 * delta
+  if (hologramBase) {
+    hologramBase.material.uniforms.uTime.value = -elapsed
+  }
+  updatePositions(delta)
 })
 </script>
