@@ -70,7 +70,6 @@ async function handleStart() {
   playSound('whoosh', 0.6)
   playSound('cooking', 0.1, true)
 
-  await delayExecution(500)
   emit('onStart')
 }
 </script>

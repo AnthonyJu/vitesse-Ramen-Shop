@@ -7,11 +7,11 @@
     @onStart="handleDining"
   />
   <!-- Scene -->
-  <TresCanvas ref="tresCanvas" v-bind="config">
+  <TresCanvas ref="tresCanvas" v-bind="canvasConfig">
     <!-- 透视相机 -->
-    <TresPerspectiveCamera :position="[-14.84, 8.0, -2.24]" :rotation="[-1.81, -1.11, -1.84]" />
+    <TresPerspectiveCamera ref="perspectiveCamera" :position="[15.9, 6.8, -11.4]" />
     <!-- 轨道控制器 -->
-    <OrbitControls />
+    <OrbitControls ref="orbitControls" enable-damping :target="[0, 0, -1]" />
     <!-- Ramen Hologram -->
     <Suspense>
       <RamenHologram />
@@ -26,9 +26,10 @@
 <script setup lang="ts">
 import * as THREE from 'three'
 import { TresCanvas, useRenderLoop, useTexture } from '@tresjs/core'
-import { OrbitControls, useGLTF, useProgress } from '@tresjs/cientos'
 import { BasicShadowMap, NoToneMapping, SRGBColorSpace } from 'three'
+import { OrbitControls, useGLTF, useProgress } from '@tresjs/cientos'
 
+import { toDefault } from './cameraCtrl'
 import sources from './sources'
 import { playSound } from './playSounds'
 import Loading from './components/Loading.vue'
@@ -37,7 +38,7 @@ import RamenHologram from './components/RamenHologram.vue'
 import bigScreenVertexShader from '@/assets/shaders/bigScreenShaders/vertex.glsl'
 import bigScreenFragmentShader from '@/assets/shaders/bigScreenShaders/fragment.glsl'
 
-const config = {
+const canvasConfig = {
   clearColor: '#000',
   shadows: true,
   alpha: false,
@@ -51,6 +52,8 @@ const { hasFinishLoading, progress } = await useProgress()
 
 const { onLoop } = useRenderLoop()
 const tresCanvas = ref<InstanceType<typeof TresCanvas> | null>(null)
+const orbitControls = ref<InstanceType<typeof OrbitControls> | null>(null)
+const perspectiveCamera = ref<InstanceType<typeof THREE.PerspectiveCamera> | null>(null)
 const { setDetectSupport, loadKTX2Texture, getKTX2Texture } = useKTX2TextureLoader()
 
 const ramenShop = await useGLTF(
@@ -76,9 +79,12 @@ onMounted(() => {
 })
 
 async function handleDining() {
+  toDefault(perspectiveCamera.value!.position, orbitControls.value!.value!.target)
+
+  await delayExecution(500)
   showLoading.value = false
 
-  await delayExecution(600)
+  await delayExecution(500)
   playSound('ding', 0.14)
 }
 
