@@ -4,7 +4,7 @@
     v-if="showLoading"
     :is-finished="hasFinishLoading"
     :progress="progress"
-    @onStart="handleStart"
+    @onStart="handleDining"
   />
   <!-- Scene -->
   <TresCanvas ref="tresCanvas" v-bind="config">
@@ -70,9 +70,19 @@ onLoop(({ elapsed }) => {
   }
 })
 
-async function setRamenShopMaterial() {
+onMounted(() => {
   setDetectSupport(tresCanvas.value!.context.renderer.value)
+  setRamenShopMaterial()
+})
 
+async function handleDining() {
+  showLoading.value = false
+
+  await delayExecution(600)
+  playSound('ding', 0.14)
+}
+
+async function setRamenShopMaterial() {
   for (const key in ramenShop.nodes) {
     const source = sources.find(item => item.name === key)
     if (!source) {
@@ -80,50 +90,10 @@ async function setRamenShopMaterial() {
       continue
     }
     if (source.name === 'vendingMachineScreen') {
-      getKTX2Texture(source.path!).then((texture) => {
-        ramenShop.nodes[key].material = new THREE.ShaderMaterial({
-          vertexShader: bigScreenVertexShader,
-          fragmentShader: bigScreenFragmentShader,
-          uniforms: {
-            uTime: { value: 0 },
-            uXOffset: { value: 0.421 },
-            uYOffset: { value: 0.522 },
-            uRadialThickness: { value: 4.0 },
-            uSpeed: { value: 0.3 },
-            uLightColor: { value: new THREE.Color('#34fe81') },
-            uDarkColor: { value: new THREE.Color('#386aff') },
-            uDefaultTexture: { value: texture },
-            uTexture1: { value: null },
-            uTexture2: { value: null },
-            uProgress: { value: 0 },
-            uTexture1IsDefault: { value: 1.0 },
-            uTexture2IsDefault: { value: 0 },
-          },
-        })
-      })
+      setVendingMachineScreen(source.path!)
     }
     else if (source.name === 'bigScreen') {
-      getKTX2Texture(source.path!).then((texture) => {
-        ramenShop.nodes[key].material = new THREE.ShaderMaterial({
-          vertexShader: bigScreenVertexShader,
-          fragmentShader: bigScreenFragmentShader,
-          uniforms: {
-            uTime: { value: 0 },
-            uXOffset: { value: 0.268 },
-            uYOffset: { value: 0.648 },
-            uRadialThickness: { value: 4.0 },
-            uSpeed: { value: 0.3 },
-            uLightColor: { value: new THREE.Color('#00FFF0') },
-            uDarkColor: { value: new THREE.Color('#05a7bd') },
-            uDefaultTexture: { value: texture },
-            uTexture1: { value: null },
-            uTexture2: { value: null },
-            uProgress: { value: 0 },
-            uTexture1IsDefault: { value: 1.0 },
-            uTexture2IsDefault: { value: 0 },
-          },
-        })
-      })
+      setBigScreen(source.path!)
     }
     else if (source.type === 'color') {
       ramenShop.nodes[key].material = source.material
@@ -138,14 +108,51 @@ async function setRamenShopMaterial() {
   }
 }
 
-async function handleStart() {
-  showLoading.value = false
-
-  await delayExecution(600)
-  playSound('ding', 0.14)
+function setBigScreen(path: string) {
+  getKTX2Texture(path).then((texture) => {
+    ramenShop.nodes.bigScreen.material = new THREE.ShaderMaterial({
+      vertexShader: bigScreenVertexShader,
+      fragmentShader: bigScreenFragmentShader,
+      uniforms: {
+        uTime: { value: 0 },
+        uXOffset: { value: 0.268 },
+        uYOffset: { value: 0.648 },
+        uRadialThickness: { value: 4.0 },
+        uSpeed: { value: 0.3 },
+        uLightColor: { value: new THREE.Color('#00FFF0') },
+        uDarkColor: { value: new THREE.Color('#05a7bd') },
+        uDefaultTexture: { value: texture },
+        uTexture1: { value: null },
+        uTexture2: { value: null },
+        uProgress: { value: 0 },
+        uTexture1IsDefault: { value: 1.0 },
+        uTexture2IsDefault: { value: 0 },
+      },
+    })
+  })
 }
 
-onMounted(() => {
-  setRamenShopMaterial()
-})
+function setVendingMachineScreen(path: string) {
+  getKTX2Texture(path).then((texture) => {
+    ramenShop.nodes.vendingMachineScreen.material = new THREE.ShaderMaterial({
+      vertexShader: bigScreenVertexShader,
+      fragmentShader: bigScreenFragmentShader,
+      uniforms: {
+        uTime: { value: 0 },
+        uXOffset: { value: 0.421 },
+        uYOffset: { value: 0.522 },
+        uRadialThickness: { value: 4.0 },
+        uSpeed: { value: 0.3 },
+        uLightColor: { value: new THREE.Color('#34fe81') },
+        uDarkColor: { value: new THREE.Color('#386aff') },
+        uDefaultTexture: { value: texture },
+        uTexture1: { value: null },
+        uTexture2: { value: null },
+        uProgress: { value: 0 },
+        uTexture1IsDefault: { value: 1.0 },
+        uTexture2IsDefault: { value: 0 },
+      },
+    })
+  })
+}
 </script>
