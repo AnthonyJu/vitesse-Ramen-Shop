@@ -9,9 +9,9 @@
   <!-- Scene -->
   <TresCanvas ref="tresCanvas" v-bind="canvasConfig">
     <!-- 透视相机 -->
-    <TresPerspectiveCamera ref="perspectiveCamera" :position="[15.9, 6.8, -11.4]" />
+    <TresPerspectiveCamera ref="perspectiveCamera" :position="[32, 14, -22]" />
     <!-- 轨道控制器 -->
-    <OrbitControls ref="orbitControls" enable-damping :target="[0, 0, -1]" />
+    <OrbitControls ref="orbitControls" enable-damping :target="[0, 1, 0]" />
     <!-- Ramen Hologram -->
     <Suspense>
       <RamenHologram />

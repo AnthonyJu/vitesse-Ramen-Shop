@@ -6,9 +6,9 @@ export function toDefault(cameraPos: THREE.Vector3, orbitTarget: THREE.Vector3) 
     {
       duration: 1.5,
       ease: 'power1.inOut',
-      x: -11.1,
-      y: 1,
-      z: -7.6,
+      x: -12,
+      y: 2,
+      z: -7,
     },
   )
 
@@ -18,7 +18,7 @@ export function toDefault(cameraPos: THREE.Vector3, orbitTarget: THREE.Vector3) 
       duration: 1.5,
       ease: 'power1.inOut',
       x: 0,
-      y: 0,
+      y: 4,
       z: -1,
     },
   )
