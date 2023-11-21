@@ -15,7 +15,7 @@ const greenLedMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color('#
 const neonYellowMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color('#FFF668') })
 const neonPinkMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color('#FF3DCB') })
 const neonBlueMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color('#00BBFF') })
-const poleLightMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color('#FF5EF1') })
+// const poleLightMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color('#FF5EF1') })
 const neonGreenMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color('#56FF54') })
 
 export default [
@@ -297,7 +297,7 @@ export default [
   {
     name: 'poleLight',
     type: 'color',
-    material: poleLightMaterial,
+    material: whiteSignMaterial,
   },
   {
     name: 'neonBlue',
