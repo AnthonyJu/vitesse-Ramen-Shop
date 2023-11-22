@@ -11,7 +11,7 @@
     <!-- 透视相机 -->
     <TresPerspectiveCamera ref="perspectiveCamera" :position="[32, 14, -22]" />
     <!-- 轨道控制器 -->
-    <OrbitControls ref="orbitControls" enable-damping :target="[0, 1, 0]" />
+    <OrbitControls ref="orbitControls" v-bind="orbitControlsConfig" />
     <!-- Ramen Hologram -->
     <Suspense>
       <RamenHologram />
@@ -20,6 +20,8 @@
     <Suspense v-for="node in ramenShop.nodes" :key="node.name">
       <primitive :object="node" />
     </Suspense>
+    <!-- 后期处理 -->
+    <PostProcessing />
   </TresCanvas>
 </template>
 
@@ -34,6 +36,7 @@ import sources from './sources'
 import { playSound } from './playSounds'
 import Loading from './components/Loading.vue'
 import RamenHologram from './components/RamenHologram.vue'
+import PostProcessing from './components/PostProcessing.vue'
 
 import bigScreenVertexShader from '@/assets/shaders/bigScreenShaders/vertex.glsl'
 import bigScreenFragmentShader from '@/assets/shaders/bigScreenShaders/fragment.glsl'
@@ -46,6 +49,17 @@ const canvasConfig = {
   outputColorSpace: SRGBColorSpace,
   toneMapping: NoToneMapping,
 }
+
+const orbitControlsConfig = reactive({
+  enablePan: false,
+  enableDamping: true,
+  minDistance: 7,
+  maxDistance: 32,
+  minAzimuthAngle: 0,
+  maxAzimuthAngle: Math.PI * 1.9999,
+  minPolarAngle: Math.PI * 0.2,
+  maxPolarAngle: Math.PI * 0.55,
+})
 
 const showLoading = ref(true)
 const { hasFinishLoading, progress } = await useProgress()
@@ -86,6 +100,8 @@ async function handleDining() {
 
   await delayExecution(500)
   playSound('ding', 0.14)
+
+  orbitControlsConfig.maxDistance = 20
 }
 
 async function setRamenShopMaterial() {
@@ -106,7 +122,7 @@ async function setRamenShopMaterial() {
     }
     else if (source.type === 'texture') {
       const { map } = await useTexture({ map: source.path })
-      ramenShop.nodes[key].material = new THREE.MeshBasicMaterial({ map })
+      ramenShop.nodes[key].material = new THREE.MeshMatcapMaterial({ matcap: map })
     }
     else {
       loadKTX2Texture(ramenShop.nodes[key], source.type, source.path!)
