@@ -1,6 +1,6 @@
 # Ramen Shop
 
-以 [Ramen Shop](https://jesse-zhou.com) 为参考，使用 `vue3` 、[thesjs](https://tresjs.org)、[cientos](https://cientos.tresjs.org/)，进行重构，仅保留了外观展示。
+以 [Ramen Shop](https://jesse-zhou.com) 为参考，使用 `vue3` 、[tresjs](https://tresjs.org)、[cientos](https://cientos.tresjs.org/)，进行重构，仅保留了外观展示。
 
 ![ramen-shop](./public/reman-shop.png)
 
